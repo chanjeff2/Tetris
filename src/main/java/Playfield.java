@@ -12,6 +12,8 @@ public class Playfield {
 
     private byte[][] grid = new byte[HEIGHT][WIDTH];
 
+    private Boolean isGameOver = false;
+
     private class PaintCommand {
         Byte[][] shape;
         int[] position;
@@ -74,12 +76,12 @@ public class Playfield {
 
         repaint();
 
-        for (int i = 0; i < 500; ++i) {
+        while (!isGameOver) {
             try {
                 Thread.sleep(REFRESH_INTERVAL);
                 softDrop();
                 repaint();
-            } catch (Exception e) {
+            } catch (InterruptedException e) {
                 System.err.println(e);
             }
         }
@@ -216,6 +218,13 @@ public class Playfield {
 
         current = tetriminosFactory.generateTetriminos();
         lastPaint = new PaintCommand(current.getShape(), current.getPosition());
+
+        if (haveCollision( tetriminos -> {
+
+        })) {
+            isGameOver = true;
+        }
+
         displayGrid();
     }
 

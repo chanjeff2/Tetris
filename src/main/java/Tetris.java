@@ -3,5 +3,7 @@ public class Tetris {
         System.out.println("Welcome To Tetris!");
         Playfield playfield = new Playfield();
         playfield.start();
+
+        System.out.println("Game Over!");
     }
 }
