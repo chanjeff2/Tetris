@@ -4,7 +4,7 @@ import Tetriminos.*;
 public class Playfield {
     private final int WIDTH = 10;
     private final int HEIGHT = 22;
-    private final int REFRESH_INTERVAL = 500;
+    private final int REFRESH_INTERVAL = 300;
 
     Tetriminos stored;
     Tetriminos current;
@@ -24,7 +24,7 @@ public class Playfield {
             paint();
         }
 
-        void paint() {
+        public void paint() {
             for (int row = 0; row < shape.length; ++row) {
                 for (int col = 0; col < shape[0].length; ++col) {
                     if (position[1] + row >= HEIGHT || position[0] + col >= WIDTH) {
@@ -75,11 +75,10 @@ public class Playfield {
 
         repaint();
 
-        for (int i = 0; i < 22; ++i) {
+        for (int i = 0; i < 500; ++i) {
             try {
                 Thread.sleep(REFRESH_INTERVAL);
-                current.softDrop();
-                current.rotateAntiClockwise();
+                softDrop();
                 repaint();
             } catch (Exception e) {
                 System.err.println(e);
@@ -121,5 +120,107 @@ public class Playfield {
         }
 
         System.out.println();
+    }
+
+    Boolean haveCollision(Callback callback) {
+        Boolean collision = false;
+
+        Tetriminos currentHook = this.current;
+        this.current = currentHook.clone();
+
+        callback.run(this.current);
+
+        Byte[][] shape = current.getShape();
+        int[] position = current.getPosition();
+
+        lastPaint.clear();
+
+        PaintCommand command = new PaintCommand(shape, position);
+
+        for (int row = 0; row < shape.length; ++row) {
+            for (int col = 0; col < shape[0].length; ++col) {
+                if (position[1] + row >= HEIGHT || position[0] + col >= WIDTH) {
+                    if (shape[row][col] == 1) {
+                        command.clear();
+                        current = currentHook;
+                        return true;
+                    }
+                } else {
+                    if (grid[position[1] + row][position[0] + col] > 1) {
+                        command.clear();
+                        current = currentHook;
+                        return true;
+                    }
+                }
+            }
+        }
+
+        command.clear();
+        lastPaint.paint();
+        this.current = currentHook;
+        return collision;
+    }
+
+    void rotateClockwise() {
+        if (haveCollision( tetriminos -> {
+            tetriminos.rotateClockwise();
+        })) {
+            return;
+        }
+
+        current.rotateClockwise();
+    }
+
+    void rotateAntiClockwise() {
+        if (haveCollision( tetriminos -> {
+            tetriminos.rotateAntiClockwise();
+        })) {
+            return;
+        }
+
+        current.rotateAntiClockwise();
+    }
+
+    void softDrop() {
+        if (haveCollision( tetriminos -> {
+            tetriminos.softDrop();
+        })) {
+            place();
+            return;
+        }
+
+        current.softDrop();
+    }
+
+    void hardDrop() {
+        while (!haveCollision( tetriminos -> {
+            tetriminos.softDrop();
+        })) {
+            current.softDrop();
+        }
+
+        place();
+    }
+
+    void place() {
+        Byte[][] shape = current.getShape();
+        int[] position = current.getPosition();
+
+        for (int row = 0; row < shape.length; ++row) {
+            for (int col = 0; col < shape[0].length; ++col) {
+                if (position[1] + row >= HEIGHT || position[0] + col >= WIDTH) {
+                    continue;
+                }
+                grid[position[1] + row][position[0] + col] += shape[row][col];
+            }
+        }
+
+        current = new Mino_I(new int[] {3, 0});
+        lastPaint = new PaintCommand(current.getShape(), current.getPosition());
+        displayGrid();
+    }
+
+    interface Callback {
+        public void run(Tetriminos tetriminos);
     }
 }
