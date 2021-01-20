@@ -162,6 +162,26 @@ public class Playfield {
         return collision;
     }
 
+    private void moveLeft() {
+        if (haveCollision( tetriminos -> {
+            tetriminos.moveLeft();
+        })) {
+            return;
+        }
+
+        current.moveLeft();
+    }
+
+    private void moveRight() {
+        if (haveCollision( tetriminos -> {
+            tetriminos.moveRight();
+        })) {
+            return;
+        }
+
+        current.moveRight();
+    }
+
     private void rotateClockwise() {
         if (haveCollision( tetriminos -> {
             tetriminos.rotateClockwise();
