@@ -8,6 +8,8 @@ public class Playfield {
     private Tetriminos stored;
     private Tetriminos current;
 
+    private TetriminosFactory tetriminosFactory = new PsudoRandomTetriminosFactory();
+
     private byte[][] grid = new byte[HEIGHT][WIDTH];
 
     private class PaintCommand {
@@ -68,7 +70,7 @@ public class Playfield {
     }
 
     public void start() {
-        current = new Mino_I(new int[] {3, 0});
+        current = tetriminosFactory.generateTetriminos(WIDTH);
 
         repaint();
 
@@ -212,7 +214,7 @@ public class Playfield {
             }
         }
 
-        current = new Mino_I(new int[] {3, 0});
+        current = tetriminosFactory.generateTetriminos(WIDTH);
         lastPaint = new PaintCommand(current.getShape(), current.getPosition());
         displayGrid();
     }
