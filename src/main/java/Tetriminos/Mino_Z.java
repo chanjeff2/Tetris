@@ -50,4 +50,14 @@ public class Mino_Z extends Tetriminos {
             }
         );
     }
+
+    public Mino_Z(Mino_Z target) {
+        this(target.position.clone());
+        this.orientation = target.orientation;
+    }
+
+    @Override
+    public Mino_Z clone() {
+        return new Mino_Z(this);
+    }
 }
