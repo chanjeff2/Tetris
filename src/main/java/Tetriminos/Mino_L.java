@@ -14,7 +14,7 @@ public class Mino_L extends Tetriminos {
             Orientation.Up, 
             new Byte[][] 
             {
-                {0, 0, 1}
+                {0, 0, 1},
                 {1, 1, 1},
                 {0, 0, 0}
             }
@@ -24,7 +24,7 @@ public class Mino_L extends Tetriminos {
             Orientation.Right, 
             new Byte[][] 
             {
-                {0, 1, 0}
+                {0, 1, 0},
                 {0, 1, 0},
                 {0, 1, 1}
             }
@@ -34,7 +34,7 @@ public class Mino_L extends Tetriminos {
             Orientation.Down, 
             new Byte[][] 
             {
-                {0, 0, 0}
+                {0, 0, 0},
                 {1, 1, 1},
                 {1, 0, 0}
             }
@@ -44,7 +44,7 @@ public class Mino_L extends Tetriminos {
             Orientation.Left, 
             new Byte[][] 
             {
-                {1, 1, 0}
+                {1, 1, 0},
                 {0, 1, 0},
                 {0, 1, 0}
             }
