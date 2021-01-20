@@ -1,4 +1,3 @@
-import java.util.Timer;
 import Tetriminos.*;
 
 public class Playfield {
@@ -6,14 +5,12 @@ public class Playfield {
     private final int HEIGHT = 22;
     private final int REFRESH_INTERVAL = 300;
 
-    Tetriminos stored;
-    Tetriminos current;
+    private Tetriminos stored;
+    private Tetriminos current;
 
-    Timer timer;
+    private byte[][] grid = new byte[HEIGHT][WIDTH];
 
-    byte[][] grid = new byte[HEIGHT][WIDTH];
-
-    class PaintCommand {
+    private class PaintCommand {
         Byte[][] shape;
         int[] position;
 
@@ -47,7 +44,7 @@ public class Playfield {
         }
     }
 
-    PaintCommand lastPaint;
+    private PaintCommand lastPaint;
 
     public Playfield() {
         for (int row = 0; row < HEIGHT; ++row) {
@@ -57,7 +54,7 @@ public class Playfield {
         }
     }
 
-    void repaint() {
+    private void repaint() {
         Byte[][] shape = current.getShape();
         int[] position = current.getPosition();
 
@@ -86,7 +83,7 @@ public class Playfield {
         }
     }
 
-    void displayGrid() {
+    private void displayGrid() {
         System.out.print("\033[?25l");
         System.out.print("\033[H\033[2J");
 
@@ -122,7 +119,7 @@ public class Playfield {
         System.out.println();
     }
 
-    Boolean haveCollision(Callback callback) {
+    private Boolean haveCollision(Callback callback) {
         Boolean collision = false;
 
         Tetriminos currentHook = this.current;
@@ -161,7 +158,7 @@ public class Playfield {
         return collision;
     }
 
-    void rotateClockwise() {
+    private void rotateClockwise() {
         if (haveCollision( tetriminos -> {
             tetriminos.rotateClockwise();
         })) {
@@ -171,7 +168,7 @@ public class Playfield {
         current.rotateClockwise();
     }
 
-    void rotateAntiClockwise() {
+    private void rotateAntiClockwise() {
         if (haveCollision( tetriminos -> {
             tetriminos.rotateAntiClockwise();
         })) {
@@ -181,7 +178,7 @@ public class Playfield {
         current.rotateAntiClockwise();
     }
 
-    void softDrop() {
+    private void softDrop() {
         if (haveCollision( tetriminos -> {
             tetriminos.softDrop();
         })) {
@@ -192,7 +189,7 @@ public class Playfield {
         current.softDrop();
     }
 
-    void hardDrop() {
+    private void hardDrop() {
         while (!haveCollision( tetriminos -> {
             tetriminos.softDrop();
         })) {
@@ -202,7 +199,7 @@ public class Playfield {
         place();
     }
 
-    void place() {
+    private void place() {
         Byte[][] shape = current.getShape();
         int[] position = current.getPosition();
 
