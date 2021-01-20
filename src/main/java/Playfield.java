@@ -13,6 +13,42 @@ public class Playfield {
 
     byte[][] grid = new byte[HEIGHT][WIDTH];
 
+    class PaintCommand {
+        Byte[][] shape;
+        int[] position;
+
+        public PaintCommand(Byte[][] shape, int[] position) {
+            this.shape = shape.clone();
+            this.position = position.clone();
+
+            paint();
+        }
+
+        void paint() {
+            for (int row = 0; row < shape.length; ++row) {
+                for (int col = 0; col < shape[0].length; ++col) {
+                    if (position[1] + row >= HEIGHT || position[0] + col >= WIDTH) {
+                        continue;
+                    }
+                    grid[position[1] + row][position[0] + col] += shape[row][col];
+                }
+            }
+        }
+
+        public void clear() {
+            for (int row = 0; row < shape.length; ++row) {
+                for (int col = 0; col < shape[0].length; ++col) {
+                    if (position[1] + row >= HEIGHT || position[0] + col >= WIDTH) {
+                        continue;
+                    }
+                    grid[position[1] + row][position[0] + col] -= shape[row][col];
+                }
+            }
+        }
+    }
+
+    PaintCommand lastPaint;
+
     public Playfield() {
         for (int row = 0; row < HEIGHT; ++row) {
             for (int col = 0; col < WIDTH; ++col) {
@@ -25,22 +61,12 @@ public class Playfield {
         Byte[][] shape = current.getShape();
         int[] position = current.getPosition();
 
-        for (int row = 0; row < HEIGHT; ++row) {
-            for (int col = 0; col < WIDTH; ++col) {
-                if (grid[row][col] == 2) {
-                    grid[row][col] = 0;
-                }
-            }
+        if (lastPaint != null) {
+            lastPaint.clear();
         }
 
-        for (int row = 0; row < shape.length; ++row) {
-            for (int col = 0; col < shape[0].length; ++col) {
-                if (position[1] + row >= HEIGHT || position[0] + col >= WIDTH) {
-                    continue;
-                }
-                grid[position[1] + row][position[0] + col] += shape[row][col] * 2;
-            }
-        }
+        lastPaint = new PaintCommand(shape, position);
+
         displayGrid();
     }
 
@@ -65,6 +91,10 @@ public class Playfield {
         System.out.print("\033[?25l");
         System.out.print("\033[H\033[2J");
 
+        System.out.println();
+        System.out.println();
+        System.out.print("\t");
+
         for (int i = 0; i < WIDTH + 2; ++i) {
             System.out.print("O ");
         }
@@ -72,7 +102,7 @@ public class Playfield {
         System.out.println();
 
         for (int row = 0; row < HEIGHT; ++row) {
-            System.out.print("O ");
+            System.out.print("\tO ");
             for (int col = 0; col < WIDTH; ++col) {
                 if (grid[row][col] == 0) {
                     System.out.print("  ");
@@ -83,6 +113,8 @@ public class Playfield {
             }
             System.out.println("O ");
         }
+
+        System.out.print("\t");
 
         for (int i = 0; i < WIDTH + 2; ++i) {
             System.out.print("O ");
