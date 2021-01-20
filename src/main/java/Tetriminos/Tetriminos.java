@@ -95,4 +95,6 @@ public abstract class Tetriminos {
     public void hardDrop(int y) {
         position[1] = y;
     }
+
+    public abstract Tetriminos clone();
 }
