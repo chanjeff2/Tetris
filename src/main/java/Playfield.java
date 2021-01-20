@@ -53,6 +53,7 @@ public class Playfield {
             try {
                 Thread.sleep(REFRESH_INTERVAL);
                 current.softDrop();
+                current.rotateAntiClockwise();
                 repaint();
             } catch (Exception e) {
                 System.err.println(e);
@@ -65,26 +66,26 @@ public class Playfield {
         System.out.print("\033[H\033[2J");
 
         for (int i = 0; i < WIDTH + 2; ++i) {
-            System.out.print("口");
+            System.out.print("O ");
         }
 
         System.out.println();
 
         for (int row = 0; row < HEIGHT; ++row) {
-            System.out.print("口");
+            System.out.print("O ");
             for (int col = 0; col < WIDTH; ++col) {
                 if (grid[row][col] == 0) {
-                    System.out.print("　");
+                    System.out.print("  ");
                 } else {
-                    System.out.print("口");
+                    System.out.print("O ");
                 }
                 
             }
-            System.out.println("口");
+            System.out.println("O ");
         }
 
         for (int i = 0; i < WIDTH + 2; ++i) {
-            System.out.print("口");
+            System.out.print("O ");
         }
 
         System.out.println();
