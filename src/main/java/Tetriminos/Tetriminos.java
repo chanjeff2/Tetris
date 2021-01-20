@@ -54,6 +54,10 @@ public abstract class Tetriminos {
         return position;
     }
 
+    public Type getType() {
+        return type;
+    }
+
     public void rotateClockwise() {
         this.orientation = this.orientation.next();
     }

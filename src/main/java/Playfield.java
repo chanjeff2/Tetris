@@ -5,7 +5,7 @@ public class Playfield {
     private final int HEIGHT = 22;
     private final int REFRESH_INTERVAL = 300;
 
-    private Tetriminos stored;
+    private Tetriminos.Type stored;
     private Tetriminos current;
 
     private TetriminosFactory tetriminosFactory = new PsudoRandomTetriminosFactory(WIDTH, HEIGHT);
@@ -217,6 +217,17 @@ public class Playfield {
         current = tetriminosFactory.generateTetriminos();
         lastPaint = new PaintCommand(current.getShape(), current.getPosition());
         displayGrid();
+    }
+
+    private void store() {
+        if (stored == null) {
+            stored = current.getType();
+            current = tetriminosFactory.generateTetriminos();
+        } else {
+            Tetriminos.Type storedType = stored;
+            stored = current.getType();
+            current = tetriminosFactory.generateTetriminos(storedType);
+        }
     }
 
     interface Callback {
