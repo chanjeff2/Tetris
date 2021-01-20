@@ -11,40 +11,27 @@ public abstract class Tetriminos {
         Mino_O, 
         Mino_S, 
         Mino_T, 
-        Mino_Z
+        Mino_Z;
+
+        public static Type[] vals = values();
     }
 
     protected Type type;
 
     public enum Orientation {
-        Up(0), 
-        Right(1), 
-        Down(2), 
-        Left(3);
+        Up,
+        Right,
+        Down,
+        Left;
 
-        int mIndex;
+        private static Orientation[] vals = values();
 
-        Orientation(int i) {
-            mIndex = i;
+        Orientation next() {
+            return vals[(this.ordinal() + 1) % vals.length];
         }
 
-        int index() {
-            return mIndex;
-        }
-
-        static Orientation getOrientation(int i) {
-            switch (i) {
-                case 0:
-                    return Up;
-                case 1:
-                    return Right;
-                case 2:
-                    return Down;
-                case 3:
-                    return Left;
-                default:
-                    return Up;
-            }
+        Orientation prev() {
+            return vals[(this.ordinal() + -1 + vals.length) % vals.length];
         }
     }
 
@@ -68,18 +55,11 @@ public abstract class Tetriminos {
     }
 
     public void rotateClockwise() {
-        int o = orientation.index();
-        o = (o + 1) % 4;
-        this.orientation = Orientation.getOrientation(o);
+        this.orientation = this.orientation.next();
     }
 
     public void rotateAntiClockwise() {
-        int o = orientation.index();
-        o = (o - 1) % 4;
-        if (o < 0) {
-            o += 4;
-        }
-        this.orientation = Orientation.getOrientation(o);
+        this.orientation = this.orientation.prev();
     }
 
     public void moveLeft() {
