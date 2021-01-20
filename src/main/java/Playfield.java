@@ -8,7 +8,7 @@ public class Playfield {
     private Tetriminos stored;
     private Tetriminos current;
 
-    private TetriminosFactory tetriminosFactory = new PsudoRandomTetriminosFactory();
+    private TetriminosFactory tetriminosFactory = new PsudoRandomTetriminosFactory(WIDTH, HEIGHT);
 
     private byte[][] grid = new byte[HEIGHT][WIDTH];
 
@@ -70,7 +70,7 @@ public class Playfield {
     }
 
     public void start() {
-        current = tetriminosFactory.generateTetriminos(WIDTH);
+        current = tetriminosFactory.generateTetriminos();
 
         repaint();
 
@@ -214,7 +214,7 @@ public class Playfield {
             }
         }
 
-        current = tetriminosFactory.generateTetriminos(WIDTH);
+        current = tetriminosFactory.generateTetriminos();
         lastPaint = new PaintCommand(current.getShape(), current.getPosition());
         displayGrid();
     }
