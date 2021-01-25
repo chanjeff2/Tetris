@@ -15,24 +15,14 @@ public abstract class TetriminosFactory {
     public abstract Tetriminos generateTetriminos();
 
     public Tetriminos generateTetriminos(Tetriminos.Type type) {
-        int x = width;
-        switch (type) {
-            case Mino_I:
-            case Mino_O:
-                x -= 4;
-                break;
+        int x = (width - type.getWidth()) / 2;
+        int y = 0;
+        int[] position = new int[] {x, y};
 
-            default:
-                x -= 3;
-                break;
-        }
-
-        x /= 2;
-            
         try {
             Class<?> _class = Class.forName("Tetriminos." + type.toString());
             Constructor<?> _constructor = _class.getConstructor(int[].class);
-            Object object = _constructor.newInstance(new int[] {x, 0});
+            Object object = _constructor.newInstance(position);
             
             return (Tetriminos) object;
         } catch (ClassNotFoundException |
@@ -43,7 +33,7 @@ public abstract class TetriminosFactory {
             
             // Class not present
             e.printStackTrace();
-            return new Mino_I(new int[] {x, 0});
+            return new Mino_I(position);
         }
     }
 }

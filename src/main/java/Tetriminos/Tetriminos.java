@@ -5,13 +5,23 @@ import java.util.HashMap;
 public abstract class Tetriminos {
 
     public enum Type {
-        Mino_I, 
-        Mino_J, 
-        Mino_L, 
-        Mino_O, 
-        Mino_S, 
-        Mino_T, 
-        Mino_Z;
+        Mino_I(4), 
+        Mino_J(3), 
+        Mino_L(3), 
+        Mino_O(4), 
+        Mino_S(3), 
+        Mino_T(3), 
+        Mino_Z(3);
+
+        private int width = 0;
+        
+        Type(int width) {
+            this.width = width;
+        }
+
+        public int getWidth() {
+            return width;
+        }
 
         public static Type[] vals = values();
     }
