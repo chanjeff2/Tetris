@@ -6,6 +6,7 @@ public class Playfield {
     private final int REFRESH_INTERVAL = 300;
 
     private Tetriminos.Type stored;
+    private Boolean isStoreTriggered = false;
     private Tetriminos current;
 
     private TetriminosFactory tetriminosFactory = new PsudoRandomTetriminosFactory(WIDTH, HEIGHT);
@@ -82,12 +83,18 @@ public class Playfield {
 
         repaint();
 
+        int counter = 0;
+
         while (!isGameOver) {
             try {
                 Thread.sleep(REFRESH_INTERVAL);
                 moveRight();
                 softDrop();
                 repaint();
+                ++counter;
+                if (counter % 25 == 10) {
+                    store();
+                }
             } catch (InterruptedException e) {
                 System.err.println(e);
             }
@@ -236,6 +243,8 @@ public class Playfield {
     }
 
     private void place() {
+        isStoreTriggered = false;
+        
         current = tetriminosFactory.generateTetriminos();
         lastPaint = new PaintCommand(current.getShape(), current.getPosition());
 
@@ -249,6 +258,12 @@ public class Playfield {
     }
 
     private void store() {
+        if (isStoreTriggered) {
+            return;
+        }
+
+        isStoreTriggered = true;
+        
         if (stored == null) {
             stored = current.getType();
             current = tetriminosFactory.generateTetriminos();
