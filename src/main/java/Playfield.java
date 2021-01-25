@@ -109,6 +109,89 @@ public class Playfield {
 
         System.out.println();
         System.out.println();
+
+        System.out.print("\t Stored: \t Next: \n\n");
+
+        if (stored != null) {
+            Tetriminos temp_stored = tetriminosFactory.generateTetriminos(stored);
+            Byte[][] stored_shape = temp_stored.getShape();
+            Byte[][] next_shape = next.getShape();
+
+            for (int i = 0; i < 4; ++i) {
+                System.out.print("\t ");
+
+                // last row
+                if (i == 3 && stored_shape.length < 4) {
+                    System.out.print("\t\t\t");
+                } else {
+                    for (int j = 0; j < 4; ++j) {
+                        // last col
+                        if (j == 3 && stored_shape[0].length < 4) {
+                            System.out.print("  ");
+                            break;
+                        }
+    
+                        if (stored_shape[i][j] == 0) {
+                            System.out.print("  ");
+                        } else {
+                            System.out.print("O ");
+                        }
+                    }
+                }
+
+                System.out.print("\t ");
+
+                if (i == 3 && next_shape.length < 4) {
+                    System.out.println();
+                    break;
+                }
+
+                for (int j = 0; j < 4; ++j) {
+                    // last col
+                    if (j == 3 && next_shape[0].length < 4) {
+                        System.out.print("  ");
+                        break;
+                    }
+
+                    if (next_shape[i][j] == 0) {
+                        System.out.print("  ");
+                    } else {
+                        System.out.print("O ");
+                    }
+                }
+
+                System.out.println();
+            }
+        } else {
+            Byte[][] shape = next.getShape();
+
+            for (int i = 0; i < 4; ++i) {
+                System.out.print("\t\t\t");
+
+                // last row
+                if (i == 3 && shape.length < 4) {
+                    System.out.println();
+                    break;
+                }
+
+                for (int j = 0; j < 4; ++j) {
+                    // last col
+                    if (j == 3 && shape[0].length < 4) {
+                        System.out.print("  ");
+                        break;
+                    }
+
+                    if (shape[i][j] == 0) {
+                        System.out.print("  ");
+                    } else {
+                        System.out.print("O ");
+                    }
+                }
+
+                System.out.println();
+            }
+        }
+
         System.out.print("\t");
 
         for (int i = 0; i < WIDTH + 2; ++i) {
