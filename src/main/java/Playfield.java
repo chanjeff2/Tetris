@@ -8,6 +8,7 @@ public class Playfield {
     private Tetriminos.Type stored;
     private Boolean isStoreTriggered = false;
     private Tetriminos current;
+    private Tetriminos next;
 
     private TetriminosFactory tetriminosFactory = new PsudoRandomTetriminosFactory(WIDTH, HEIGHT);
 
@@ -80,6 +81,7 @@ public class Playfield {
 
     public void start() {
         current = tetriminosFactory.generateTetriminos();
+        next = tetriminosFactory.generateTetriminos();
 
         repaint();
 
@@ -245,7 +247,8 @@ public class Playfield {
     private void place() {
         isStoreTriggered = false;
         
-        current = tetriminosFactory.generateTetriminos();
+        current = next;
+        next = tetriminosFactory.generateTetriminos();
         lastPaint = new PaintCommand(current.getShape(), current.getPosition());
 
         if (haveCollision( tetriminos -> {
@@ -266,7 +269,8 @@ public class Playfield {
         
         if (stored == null) {
             stored = current.getType();
-            current = tetriminosFactory.generateTetriminos();
+            current = next;
+            next = tetriminosFactory.generateTetriminos();
         } else {
             Tetriminos.Type storedType = stored;
             stored = current.getType();
