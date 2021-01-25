@@ -8,6 +8,7 @@ public class Playfield {
     private Tetriminos.Type stored;
     private Boolean isStoreTriggered = false;
     private Tetriminos current;
+    private Tetriminos next;
 
     private TetriminosFactory tetriminosFactory = new PsudoRandomTetriminosFactory(WIDTH, HEIGHT);
 
@@ -80,6 +81,7 @@ public class Playfield {
 
     public void start() {
         current = tetriminosFactory.generateTetriminos();
+        next = tetriminosFactory.generateTetriminos();
 
         repaint();
 
@@ -107,6 +109,89 @@ public class Playfield {
 
         System.out.println();
         System.out.println();
+
+        System.out.print("\t Stored: \t Next: \n\n");
+
+        if (stored != null) {
+            Tetriminos temp_stored = tetriminosFactory.generateTetriminos(stored);
+            Byte[][] stored_shape = temp_stored.getShape();
+            Byte[][] next_shape = next.getShape();
+
+            for (int i = 0; i < 4; ++i) {
+                System.out.print("\t ");
+
+                // last row
+                if (i == 3 && stored_shape.length < 4) {
+                    System.out.print("\t\t\t");
+                } else {
+                    for (int j = 0; j < 4; ++j) {
+                        // last col
+                        if (j == 3 && stored_shape[0].length < 4) {
+                            System.out.print("  ");
+                            break;
+                        }
+    
+                        if (stored_shape[i][j] == 0) {
+                            System.out.print("  ");
+                        } else {
+                            System.out.print("O ");
+                        }
+                    }
+                }
+
+                System.out.print("\t ");
+
+                if (i == 3 && next_shape.length < 4) {
+                    System.out.println();
+                    break;
+                }
+
+                for (int j = 0; j < 4; ++j) {
+                    // last col
+                    if (j == 3 && next_shape[0].length < 4) {
+                        System.out.print("  ");
+                        break;
+                    }
+
+                    if (next_shape[i][j] == 0) {
+                        System.out.print("  ");
+                    } else {
+                        System.out.print("O ");
+                    }
+                }
+
+                System.out.println();
+            }
+        } else {
+            Byte[][] shape = next.getShape();
+
+            for (int i = 0; i < 4; ++i) {
+                System.out.print("\t\t\t");
+
+                // last row
+                if (i == 3 && shape.length < 4) {
+                    System.out.println();
+                    break;
+                }
+
+                for (int j = 0; j < 4; ++j) {
+                    // last col
+                    if (j == 3 && shape[0].length < 4) {
+                        System.out.print("  ");
+                        break;
+                    }
+
+                    if (shape[i][j] == 0) {
+                        System.out.print("  ");
+                    } else {
+                        System.out.print("O ");
+                    }
+                }
+
+                System.out.println();
+            }
+        }
+
         System.out.print("\t");
 
         for (int i = 0; i < WIDTH + 2; ++i) {
@@ -245,7 +330,8 @@ public class Playfield {
     private void place() {
         isStoreTriggered = false;
         
-        current = tetriminosFactory.generateTetriminos();
+        current = next;
+        next = tetriminosFactory.generateTetriminos();
         lastPaint = new PaintCommand(current.getShape(), current.getPosition());
 
         if (haveCollision( tetriminos -> {
@@ -266,7 +352,8 @@ public class Playfield {
         
         if (stored == null) {
             stored = current.getType();
-            current = tetriminosFactory.generateTetriminos();
+            current = next;
+            next = tetriminosFactory.generateTetriminos();
         } else {
             Tetriminos.Type storedType = stored;
             stored = current.getType();
