@@ -28,7 +28,10 @@ public class Playfield {
         public void paint() {
             for (int row = 0; row < shape.length; ++row) {
                 for (int col = 0; col < shape[0].length; ++col) {
-                    if (position[1] + row >= HEIGHT || position[0] + col >= WIDTH) {
+                    if (position[1] + row < 0 || 
+                        position[1] + row >= HEIGHT || 
+                        position[0] + col < 0 || 
+                        position[0] + col >= WIDTH) {
                         continue;
                     }
                     grid[position[1] + row][position[0] + col] += shape[row][col];
@@ -39,7 +42,10 @@ public class Playfield {
         public void clear() {
             for (int row = 0; row < shape.length; ++row) {
                 for (int col = 0; col < shape[0].length; ++col) {
-                    if (position[1] + row >= HEIGHT || position[0] + col >= WIDTH) {
+                    if (position[1] + row < 0 || 
+                        position[1] + row >= HEIGHT || 
+                        position[0] + col < 0 || 
+                        position[0] + col >= WIDTH) {
                         continue;
                     }
                     grid[position[1] + row][position[0] + col] -= shape[row][col];
@@ -79,6 +85,7 @@ public class Playfield {
         while (!isGameOver) {
             try {
                 Thread.sleep(REFRESH_INTERVAL);
+                moveRight();
                 softDrop();
                 repaint();
             } catch (InterruptedException e) {
@@ -109,7 +116,6 @@ public class Playfield {
                 } else {
                     System.out.print("O ");
                 }
-                
             }
             System.out.println("O ");
         }
@@ -139,18 +145,24 @@ public class Playfield {
         PaintCommand command = new PaintCommand(shape, position);
 
         for (int row = 0; row < shape.length; ++row) {
+            if (collision) {
+                break;
+            }
             for (int col = 0; col < shape[0].length; ++col) {
-                if (position[1] + row >= HEIGHT || position[0] + col >= WIDTH) {
+                if (position[1] + row < 0 || 
+                    position[1] + row >= HEIGHT || 
+                    position[0] + col < 0 || 
+                    position[0] + col >= WIDTH) {
+                    // overflow
                     if (shape[row][col] == 1) {
-                        command.clear();
-                        current = currentHook;
-                        return true;
+                        collision = true;
+                        break;
                     }
                 } else {
+                    // overlap
                     if (grid[position[1] + row][position[0] + col] > 1) {
-                        command.clear();
-                        current = currentHook;
-                        return true;
+                        collision = true;
+                        break;
                     }
                 }
             }
@@ -224,18 +236,6 @@ public class Playfield {
     }
 
     private void place() {
-        Byte[][] shape = current.getShape();
-        int[] position = current.getPosition();
-
-        for (int row = 0; row < shape.length; ++row) {
-            for (int col = 0; col < shape[0].length; ++col) {
-                if (position[1] + row >= HEIGHT || position[0] + col >= WIDTH) {
-                    continue;
-                }
-                grid[position[1] + row][position[0] + col] += shape[row][col];
-            }
-        }
-
         current = tetriminosFactory.generateTetriminos();
         lastPaint = new PaintCommand(current.getShape(), current.getPosition());
 
