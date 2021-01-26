@@ -328,6 +328,8 @@ public class Playfield {
     }
 
     private void place() {
+        int line_cleared = CheckClearLine();
+
         isStoreTriggered = false;
         
         current = next;
@@ -341,6 +343,28 @@ public class Playfield {
         }
 
         displayGrid();
+    }
+
+    private int CheckClearLine() {
+        int line_cleared = 0; // Stores how many line the block cleared
+        // Get the rows to be checked
+        for (int row = current.getPosition()[1]; row > (current.getPosition()[1] - current.getShape().length); row--) {
+            boolean filled = false;
+            for (int col = 0; col < WIDTH; col++) {
+                if (grid[row][col] == 0) break;
+                // If you get to this line then it is whole row are filled. gg!
+                filled = true;
+            }
+            if (filled) {
+                line_cleared += 1;
+                for (int current_row = row; current_row < HEIGHT - 1; current_row++) {
+                    for (int col = 0; col < WIDTH; col++) {
+                        grid[current_row][col] = grid[current_row + 1][col];
+                    }
+                }
+            }
+        }
+        return line_cleared;
     }
 
     private void store() {
